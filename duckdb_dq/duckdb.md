@@ -563,7 +563,7 @@ The result represents 112 dupl*cate groups under this specific du*licate definit
 
 ---
 
-# Part 9: Cre*ting the Check Runner
+# Part 9: Creating the Check Runner
 
 ## Where?
 
