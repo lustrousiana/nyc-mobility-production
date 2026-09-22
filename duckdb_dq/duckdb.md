@@ -6,7 +6,7 @@ The purpose was not to replace our existing Databricks validation. Instead, Duck
 
 ## Table of Contents
 
-1. #part-1-what-is-duckdb
+-- to edit--1. #part-1-what-is-duckdb
 2. #part-2-why-add-duckdb
 3. #part-3-where-does-duckdb-run
 4. #part-4-duckdb-vs-databricks-validation
@@ -21,7 +21,7 @@ The purpose was not to replace our existing Databricks validation. Instead, Duck
 13. #part-13-why-the-duplicate-failure-is-useful
 14. [Possible Futuree-future-improvements
 15. #what-i-learned
-
+--to--edit--
 The overall DuckDB flow is:
 
 ```text
