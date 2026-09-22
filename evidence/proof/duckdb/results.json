@@ -1,0 +1,20 @@
+[
+  {
+    "check": "green_taxi_row_count",
+    "observed": 44208,
+    "expected": 0,
+    "passed": true
+  },
+  {
+    "check": "null_pickup_zone",
+    "observed": 0,
+    "expected": 0,
+    "passed": true
+  },
+  {
+    "check": "duplicate_trips",
+    "observed": 112,
+    "expected": 0,
+    "passed": false
+  }
+]
