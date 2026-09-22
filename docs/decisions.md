@@ -47,7 +47,8 @@ This log explains why choices were made. Detailed implementation contracts live 
 | D22 | Rebuild every layer above Bronze in full; keep incremental processing at Bronze | Approved | Late-arriving rows and global duplicate detection stay correct without watermark state below Bronze |
 | D23 | Store wall-clock business timestamps as `TIMESTAMP_NTZ` and convert with `convert_timezone` | Approved | No stored timestamp depends on the cluster's session timezone |
 | D24 | Add a `SUPERSEDED` batch status for content that was later reloaded | Approved | A reload no longer reads as double processing, and the earlier attempt stays auditable |
-
+| D25| Additional analytics question — fare efficiency by borough | Approved | Extends the ratified Q1–Q3 set from D12 with a value/efficiency lens
+rather than a volume or weather one |
 
 ## Foundational decisions
 
@@ -874,3 +875,21 @@ own `batch_id`, `row_count` and timestamps.
 - `supersedes_batch_id` exists on the table but is **not yet populated**; the link
   between a batch and the one it replaces is currently inferable only from
   `content_sha256` and timestamps.
+
+### D25: Additional analytics question — fare efficiency by borough
+
+**Status:** Proposed
+**Decision date:** 2026-09-22
+
+**Decision:**
+- Additional business question: What's the average fare-per-mile by borough?
+
+**Measure:** 
+- Fare per mile (SUM of eligible fare ÷ SUM of eligible distance,
+not an average of each trip's own ratio)
+**By:** Pickup borough
+
+- This extends the ratified Q1–Q3 set from D12 with a value/efficiency lens
+rather than a volume or weather one. It reuses only existing Gold objects
+(`fact_taxi_trip`, `dim_taxi_zone`) — no new dimension, fact table, or
+upstream source was required.

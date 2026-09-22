@@ -226,6 +226,21 @@ The natural uniqueness constraint is (`weather_code`, `precipitation_band`).
 
 For Q2, all measures are grouped by the weather classification matched at pickup hour. For Q3, pickup and drop-off zone roles are evaluated separately. The drop-off role may use drop-off date and hour for its time grouping, but its weather classification remains the one attributed at pickup hour.
 
+## fare_efficiency_by_borough (06-analytics)
+
+**Grain Statement:** "One row per pickup borough."
+
+| Field | Type | Nullable | Key | Definition and rule |
+|---|---|---|---|---|
+| pickup_borough | STRING | Yes | — | From `dim_taxi_zone.borough` via `fact_taxi_trip.pickup_zone_key`. NULL when the pickup zone key has no matching dimension row. |
+| trip_count | BIGINT | No | — | `SUM(fact_taxi_trip.trip_count)`, unfiltered — always reconciles 1:1 to the Gold total. |
+| total_fare_amount_usd | DECIMAL | Yes | — | `SUM(fare_amount_usd)` over trips where `fare_eligible` (`NOT negative_fare_amount_flag`). |
+| total_trip_distance_miles | DECIMAL | Yes | — | `SUM(trip_distance_miles)` over trips where `distance_eligible` (`NOT negative_trip_distance_flag AND trip_distance_miles > 0`). |
+| fare_per_mile_usd | DECIMAL(10,2) | Yes | — | `total_fare_amount_usd / NULLIF(total_trip_distance_miles, 0)` — sum-of-sums, not an average of individual ratios, so a few short high-fare trips can't skew the borough total. |
+| avg_fare_amount_usd | DECIMAL(10,2) | Yes | — | Mean fare over fare-eligible trips only. |
+| avg_trip_distance_miles | DECIMAL(10,3) | Yes | — | Mean distance over distance-eligible trips only. |
+| fare_per_mile_rank | INT | No | — | `DENSE_RANK()` over `fare_per_mile_usd DESC`; rank 1 = highest fare-per-mile borough. |
+
 ## Maintenance rule
 
 Any pull request that adds, renames, casts, derives, drops, reinterprets, or reroutes a field must update this dictionary and `docs/source_to_target_mapping.md` in the same change. Changes to a Gold table, grain, key, or relationship must also update `docs/data_model.md`, `docs/decisions.md`, the DBML source, and the exported model diagram.
